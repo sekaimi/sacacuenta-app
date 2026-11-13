@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SacaCuenta · Deja de adivinar cuánto ganas</title>
+<meta name="description" content="App para bodegas y negocios pequeños en Venezuela: ventas, inventario, fiado y ganancia real, en bolívares y dólares. 7 días gratis y después un solo pago.">
+<meta name="theme-color" content="#0a1016">
+<meta name="color-scheme" content="dark">
+<meta property="og:title" content="SacaCuenta: deja de adivinar cuánto ganas">
+<meta property="og:description" content="Ventas, inventario, fiado y ganancia real de tu negocio en el teléfono. 7 días gratis, después un solo pago.">
+<meta property="og:image" content="img/resumen-dark.webp">
+<link rel="icon" href="icon-192.png">
+<link rel="preload" href="fonts/bricolage.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+@font-face{font-family:"Bricolage";src:url(fonts/bricolage.woff2) format("woff2");font-weight:200 800;font-display:swap}
+:root{
+  --bg:#0a1016; --bg2:#0e161e; --card:#121c26; --line:rgba(255,255,255,.09); --line2:rgba(255,255,255,.16);
+  --ink:#eef3f7; --muted:#97a6b3; --orange:#f58a3c; --orange2:#dd5a12; --blue:#2f6ea3; --ok:#5fd39a;
+  --wrap:1120px;
+  --check:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E");
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;background:var(--bg)}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.55 "Bricolage",system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{max-width:100%;display:block;height:auto}
+a{color:inherit}
+p{margin:0}
+:focus-visible{outline:3px solid var(--orange);outline-offset:3px;border-radius:8px}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 22px}
+h1,h2,h3{margin:0;font-weight:740;letter-spacing:-.03em;line-height:1.05}
+h2{font-size:clamp(32px,4.8vw,52px)}
+h3{font-size:20px;letter-spacing:-.015em;line-height:1.2;font-weight:680}
+.hot{background:linear-gradient(92deg,#ffb26b,var(--orange) 45%,#ff6a2b);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{color:var(--muted);font-size:clamp(17px,1.9vw,20px);max-width:54ch}
+.center{text-align:center}.center .lead{margin-left:auto;margin-right:auto}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:15px 24px;border-radius:14px;font-weight:650;font-size:16.5px;text-decoration:none;border:1px solid transparent;transition:transform .15s ease,background .15s ease,border-color .15s ease}
+.btn:active{transform:scale(.97)}
+.btn svg{width:20px;height:20px;flex:none}
+.btn-main{background:var(--orange);color:#1a0d04;box-shadow:0 10px 40px -10px rgba(245,138,60,.7)}
+.btn-main:hover{background:#ffa056}
+.btn-dark{background:rgba(255,255,255,.06);border-color:var(--line2);color:var(--ink)}
+.btn-dark:hover{background:rgba(255,255,255,.11)}
+
+.pill{display:inline-flex;align-items:center;gap:9px;padding:7px 15px;border-radius:999px;border:1px solid rgba(245,138,60,.35);background:rgba(245,138,60,.1);color:#ffc592;font-size:14.5px;font-weight:600}
+.pill i{width:8px;height:8px;border-radius:50%;background:var(--orange);box-shadow:0 0 0 4px rgba(245,138,60,.22)}
+
+.checks{list-style:none;margin:0;padding:0;display:grid;gap:11px}
+.checks li{display:grid;grid-template-columns:22px 1fr;gap:10px;align-items:start}
+.checks li::before{content:"";width:20px;height:20px;margin-top:3px;background:var(--ok);-webkit-mask:var(--check) center/contain no-repeat;mask:var(--check) center/contain no-repeat}
+
+/* cabecera */
+.top{position:sticky;top:0;z-index:30;background:rgba(10,16,22,.78);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:28px;height:66px}
+.logo{display:flex;align-items:center;gap:10px;font-size:20px;text-decoration:none;letter-spacing:-.02em}
+.logo b{font-weight:780}
+.logo img{width:32px;height:32px;border-radius:9px}
+.logo span{color:var(--orange)}
+.menu{display:flex;gap:26px;margin-left:auto;font-size:15.5px}
+.menu a{text-decoration:none;color:var(--muted)}
+.menu a:hover{color:var(--ink)}
+.top .btn{padding:10px 18px;font-size:15px;border-radius:12px}
+
+/* portada */
+.hero{position:relative;padding:72px 0 0;text-align:center}
+.hero::before{content:"";position:absolute;inset:-120px 0 auto;height:900px;pointer-events:none;
+  background:radial-gradient(520px 380px at 50% 78%,rgba(245,138,60,.34),transparent 70%),radial-gradient(620px 420px at 22% 62%,rgba(47,110,163,.3),transparent 70%),radial-gradient(520px 380px at 82% 55%,rgba(221,90,18,.18),transparent 70%)}
+.hero .wrap{position:relative}
+.hero h1{font-size:clamp(46px,8.4vw,92px);margin:26px auto 0;max-width:13ch}
+.hero .lead{margin:24px auto 0}
+.cta{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:34px}
+.trust{display:flex;flex-wrap:wrap;gap:8px 26px;justify-content:center;margin:26px 0 0;padding:0;list-style:none;color:var(--muted);font-size:15px}
+.trust li{display:flex;align-items:center;gap:8px}
+.trust li::before{content:"";width:16px;height:16px;background:var(--ok);-webkit-mask:var(--check) center/contain no-repeat;mask:var(--check) center/contain no-repeat}
+
+.phone{border-radius:36px;padding:8px;background:#05090d;border:1px solid var(--line2);box-shadow:0 40px 90px -30px #000}
+.phone img{border-radius:28px;width:100%}
+.trio{display:flex;justify-content:center;align-items:flex-start;gap:26px;margin-top:64px;height:520px;overflow:hidden;-webkit-mask-image:linear-gradient(#000 76%,transparent);mask-image:linear-gradient(#000 76%,transparent)}
+.trio .phone{width:268px;flex:none}
+.trio .phone:nth-child(1),.trio .phone:nth-child(3){width:232px;margin-top:70px;opacity:.85}
+
+/* secciones */
+section{padding:96px 0}
+.head{display:grid;gap:16px;margin-bottom:52px}
+
+.pain{background:var(--bg2);border-block:1px solid var(--line)}
+.pain .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.q{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:26px}
+.q h3{margin-bottom:8px}
+.q p{color:var(--muted);font-size:16px}
+
+.mods{padding-bottom:40px}
+.mod{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;padding:44px 0}
+.mod.flip .shot{order:-1}
+.mod h3{font-size:clamp(26px,3.2vw,36px);letter-spacing:-.03em;line-height:1.08;font-weight:740;margin:14px 0}
+.mod .txt>p{color:var(--muted);margin-bottom:22px;max-width:46ch}
+.tag{display:inline-block;font-size:14px;font-weight:650;color:#ffc592;background:rgba(245,138,60,.1);border:1px solid rgba(245,138,60,.3);padding:5px 12px;border-radius:999px}
+.shot{position:relative;display:grid;place-items:center;padding:34px 0}
+.shot::before{content:"";position:absolute;inset:8% 6%;border-radius:50%;background:radial-gradient(closest-side,rgba(245,138,60,.26),rgba(47,110,163,.16) 60%,transparent)}
+.shot .phone{position:relative;width:min(290px,78%)}
+
+.biz{background:var(--bg2);border-block:1px solid var(--line)}
+.biz .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.biz .item{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px}
+.biz .item h3{font-size:18px;margin-bottom:6px}
+.biz .item p{font-size:15.5px;color:var(--muted)}
+
+.price .box{display:grid;grid-template-columns:.9fr 1.1fr;border:1px solid var(--line2);border-radius:28px;overflow:hidden;background:var(--card)}
+.price .pay{padding:44px;background:radial-gradient(420px 300px at 20% 0,rgba(245,138,60,.2),transparent 70%)}
+.amount{font-size:clamp(84px,11vw,128px);font-weight:780;letter-spacing:-.05em;line-height:.9;margin:22px 0 6px}
+.amount small{font-size:.2em;letter-spacing:0;color:var(--muted);font-weight:600;margin-left:10px}
+.pay .sub{color:var(--muted);margin-bottom:26px}
+.pay .btn{margin-top:30px;width:100%}
+.steps{list-style:none;margin:0;padding:44px;counter-reset:s;border-left:1px solid var(--line);display:grid;gap:26px;align-content:center}
+.steps li{counter-increment:s;display:grid;grid-template-columns:40px 1fr;gap:16px}
+.steps li::before{content:counter(s);width:36px;height:36px;border-radius:11px;background:rgba(245,138,60,.14);color:var(--orange);display:grid;place-items:center;font-weight:750}
+.steps h3{font-size:18.5px;margin-bottom:4px}
+.steps p{color:var(--muted);font-size:16px}
+
+.get,.faq{padding-top:0}
+.get .grid{display:grid;grid-template-columns:1.15fr 1fr 1fr;gap:16px}
+.opt{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:28px;display:flex;flex-direction:column;gap:13px}
+.opt.main{border-color:rgba(245,138,60,.55);background:linear-gradient(180deg,rgba(245,138,60,.1),var(--card) 60%)}
+.opt svg.big{width:36px;height:36px;color:var(--orange)}
+.opt p{color:var(--muted);font-size:16px}
+.opt .btn{margin-top:auto}
+.opt .note{font-size:14.5px;background:rgba(255,255,255,.05);padding:12px 14px;border-radius:12px}
+
+.faq .wrap{display:grid;grid-template-columns:.8fr 1.2fr;gap:64px}
+details{border-bottom:1px solid var(--line)}
+summary{cursor:pointer;list-style:none;padding:21px 40px 21px 0;font-weight:650;font-size:18.5px;position:relative}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"";position:absolute;right:8px;top:28px;width:11px;height:11px;border-right:2.5px solid var(--orange);border-bottom:2.5px solid var(--orange);transform:rotate(45deg);transition:transform .2s ease}
+details[open] summary::after{transform:rotate(225deg);top:34px}
+details p{padding:0 0 22px;color:var(--muted);max-width:60ch}
+
+.end{position:relative;text-align:center;padding:110px 0;overflow:hidden;border-top:1px solid var(--line)}
+.end::before{content:"";position:absolute;inset:auto 0 -260px;height:520px;background:radial-gradient(520px 260px at 50% 100%,rgba(245,138,60,.4),transparent 70%);pointer-events:none}
+.end h2{font-size:clamp(38px,6.4vw,72px)}
+.end .wrap{position:relative}
+
+footer{padding:38px 0;border-top:1px solid var(--line)}
+footer .wrap{display:flex;flex-wrap:wrap;gap:20px;justify-content:space-between;align-items:center}
+footer p{color:var(--muted);font-size:15px}
+
+@media (max-width:900px){
+  .menu{display:none}.top .btn{margin-left:auto}
+  .hero{padding-top:48px}
+  .trio{height:430px;gap:14px;margin-top:48px}
+  .trio .phone{width:222px}.trio .phone:nth-child(1),.trio .phone:nth-child(3){width:190px}
+  section{padding:68px 0}
+  .pain .grid,.get .grid,.faq .wrap,.price .box{grid-template-columns:1fr}
+  .faq .wrap{gap:28px}
+  .mod{grid-template-columns:1fr;gap:8px;padding:30px 0}
+  .mod.flip .shot{order:0}
+  .biz .grid{grid-template-columns:repeat(2,1fr)}
+  .steps{border-left:0;border-top:1px solid var(--line);padding:30px 24px}
+  .price .pay{padding:30px 24px}
+}
+@media (max-width:520px){
+  .cta .btn{width:100%}
+  .trio .phone:nth-child(1),.trio .phone:nth-child(3){display:none}
+  .trio{height:400px}.trio .phone{width:236px}
+  .biz .grid{grid-template-columns:1fr}
+  .trust{flex-direction:column;align-items:center}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="#"><img src="icon-192.png" alt="" width="32" height="32"><b>Saca<span>Cuenta</span></b></a>
+    <nav class="menu" aria-label="Secciones">
+      <a href="#funciones">Funciones</a><a href="#negocios">Negocios</a><a href="#precio">Precio</a><a href="#preguntas">Preguntas</a>
+    </nav>
+    <a class="btn btn-main" href="#descargar">Descargar</a>
+  </div>
+</header>
+
+<main>
+<section class="hero">
+  <div class="wrap">
+    <span class="pill"><i></i>7 días gratis, sin tarjeta</span>
+    <h1>Deja de adivinar <span class="hot">cuánto ganas.</span></h1>
+    <p class="lead">SacaCuenta anota tus ventas, controla tu inventario y tu fiado, y te dice la ganancia real de tu negocio. En bolívares y en dólares, desde el teléfono.</p>
+    <div class="cta">
+      <a class="btn btn-main" href="SacaCuenta.apk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Descargar para Android</a>
+      <a class="btn btn-dark" href="app/">Usar en la computadora</a>
+    </div>
+    <ul class="trust"><li>Un solo pago de $10</li><li>Pagas por Pago Móvil</li><li>Vende sin internet</li></ul>
+    <div class="trio" aria-hidden="true">
+      <div class="phone"><img src="img/inventario-dark.webp" alt="" width="780" height="1688"></div>
+      <div class="phone"><img src="img/resumen-dark.webp" alt="" width="780" height="1688"></div>
+      <div class="phone"><img src="img/cobrar-dark.webp" alt="" width="780" height="1688"></div>
+    </div>
+  </div>
+</section>
+
+<section class="pain">
+  <div class="wrap">
+    <div class="head center">
+      <h2>¿Te suena <span class="hot">familiar?</span></h2>
+      <p class="lead">Es lo que pasa cuando el negocio se lleva en un cuaderno.</p>
+    </div>
+    <div class="grid">
+      <div class="q"><h3>“Vendo todo el día y no sé cuánto me quedó”</h3><p>Sabes cuánto entró a la caja, pero no cuánto de eso es ganancia después de reponer la mercancía.</p></div>
+      <div class="q"><h3>“Me entero de que se acabó cuando el cliente lo pide”</h3><p>Nadie lleva la cuenta de lo que queda, y la venta se pierde.</p></div>
+      <div class="q"><h3>“Me deben fiado y no sé cuánto”</h3><p>Las deudas están en varias hojas, unas en dólares y otras en bolívares.</p></div>
+      <div class="q"><h3>“Se me va la noche sacando cuentas”</h3><p>Sumar efectivo, Pago Móvil y punto, cada uno a su tasa, y que al final no cuadre.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="mods" id="funciones">
+  <div class="wrap">
+    <div class="head center">
+      <h2>Todo tu negocio, <span class="hot">en el teléfono</span></h2>
+      <p class="lead">Cuatro cosas que el cuaderno no hace, pensadas para usarse con una mano mientras atiendes.</p>
+    </div>
+
+    <div class="mod">
+      <div class="txt"><span class="tag">Ventas</span>
+        <h3>Cobra como te paguen</h3>
+        <p>Tocas los productos, la app suma y te da el total en dólares y en bolívares a la tasa del día.</p>
+        <ul class="checks"><li>Efectivo, Pago Móvil, punto o fiado</li><li>Varias formas de pago en una misma venta</li><li>Venta por peso: queso, pollo o carne por kilo</li><li>Tus productos con foto, los más vendidos primero</li></ul></div>
+      <div class="shot"><div class="phone"><img src="img/cobrar-dark.webp" alt="Pantalla de cobro: tres productos, total de 8,50 dólares o 7.650 bolívares y botones de Efectivo, Pago Móvil, Punto y Fiado" width="780" height="1688" loading="lazy"></div></div>
+    </div>
+
+    <div class="mod flip">
+      <div class="txt"><span class="tag">Ganancia real</span>
+        <h3>Lo que te quedó, no lo que entró</h3>
+        <p>Cada venta se guarda con lo que te costó la mercancía. El resumen resta ese costo y tus gastos.</p>
+        <ul class="checks"><li>Ganancia por día, por semana y por mes</li><li>Cuánto entró por cada forma de pago</li><li>Gastos del negocio anotados aparte</li><li>Reporte de ventas para descargar</li></ul></div>
+      <div class="shot"><div class="phone"><img src="img/resumen7-dark.webp" alt="Resumen de 7 días con lo vendido, el costo de lo vendido, los gastos y la ganancia real" width="780" height="1688" loading="lazy"></div></div>
+    </div>
+
+    <div class="mod">
+      <div class="txt"><span class="tag">Inventario</span>
+        <h3>Sabes qué te queda sin contar a mano</h3>
+        <p>Anotas cuánto tienes una vez. Desde ahí baja solo con cada venta y te avisa antes de que se acabe.</p>
+        <ul class="checks"><li>Aviso de lo que hay que reponer</li><li>Registra la mercancía que llega y su costo nuevo</li><li>Anota lo dañado o vencido para que la ganancia no te engañe</li><li>Cuánto dinero tienes invertido en mercancía</li></ul></div>
+      <div class="shot"><div class="phone"><img src="img/inventario-dark.webp" alt="Inventario: productos con su existencia, uno agotado y dos por reponer, y el valor de la mercancía" width="780" height="1688" loading="lazy"></div></div>
+    </div>
+
+    <div class="mod flip">
+      <div class="txt"><span class="tag">Fiado</span>
+        <h3>Quién te debe y cuánto</h3>
+        <p>La deuda se guarda en dólares y siempre ves lo que equivale hoy en bolívares.</p>
+        <ul class="checks"><li>Una cuenta por cliente</li><li>Abonos anotados con su fecha</li><li>El total que te deben, a la vista</li></ul></div>
+      <div class="shot"><div class="phone"><img src="img/fiado-dark.webp" alt="Lista de fiado con tres clientes y lo que debe cada uno" width="780" height="1688" loading="lazy"></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="biz" id="negocios">
+  <div class="wrap">
+    <div class="head center">
+      <h2>Se arma según <span class="hot">tu negocio</span></h2>
+      <p class="lead">La primera vez eliges qué tipo de negocio tienes. Todos incluyen ventas, inventario, gastos y ganancia real.</p>
+    </div>
+    <div class="grid">
+      <div class="item"><h3>Bodega</h3><p>Por unidad, por bulto o por peso. Con fiado.</p></div>
+      <div class="item"><h3>Vendedor ambulante</h3><p>Botones grandes y cobro en un toque.</p></div>
+      <div class="item"><h3>Emprendimiento</h3><p>Costo con empaque y ventas por encargo.</p></div>
+      <div class="item"><h3>Venta por pedidos</h3><p>Abonos, fecha de entrega y qué producir.</p></div>
+      <div class="item"><h3>Comida rápida</h3><p>Menú, extras y órdenes numeradas.</p></div>
+      <div class="item"><h3>Restaurante</h3><p>Mesas con cuenta abierta y servicio.</p></div>
+      <div class="item"><h3>Tienda de ropa</h3><p>Tallas, colores y prendas apartadas.</p></div>
+      <div class="item"><h3>Otro negocio</h3><p>Elige el que más se parezca al tuyo.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="price" id="precio">
+  <div class="wrap">
+    <div class="head center">
+      <h2>Un solo pago. <span class="hot">Sin mensualidades.</span></h2>
+      <p class="lead">La pruebas 7 días con todo incluido. Si te sirve, la pagas una vez.</p>
+    </div>
+    <div class="box">
+      <div class="pay">
+        <span class="tag">Pago único</span>
+        <p class="amount">$10<small>una vez</small></p>
+        <p class="sub">O su equivalente en bolívares a la tasa del día.</p>
+        <ul class="checks"><li>Todas las funciones y todos los tipos de negocio</li><li>Respaldo de tus datos en tu cuenta</li><li>Teléfono, computadora o iPhone con la misma cuenta</li><li>Sin tarjeta ni cobros automáticos</li></ul>
+        <a class="btn btn-main" href="#descargar">Empezar los 7 días gratis</a>
+      </div>
+      <ol class="steps">
+        <li><div><h3>Descárgala y crea tu cuenta</h3><p>Con tu correo o tu cuenta de Google.</p></div></li>
+        <li><div><h3>Úsala 7 días gratis</h3><p>Carga tus productos y vende como siempre.</p></div></li>
+        <li><div><h3>Paga por Pago Móvil</h3><p>Los datos están dentro de la app, en Activar. Envías el comprobante por WhatsApp con el correo de tu cuenta.</p></div></li>
+        <li><div><h3>Activamos tu cuenta</h3><p>Sigues con todo lo que anotaste durante la prueba.</p></div></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section class="get" id="descargar">
+  <div class="wrap">
+    <div class="head center">
+      <h2>Descarga <span class="hot">SacaCuenta</span></h2>
+      <p class="lead">Es la misma cuenta en todos lados. Tus datos se respaldan y los recuperas en otro equipo.</p>
+    </div>
+    <div class="grid">
+      <div class="opt main">
+        <svg class="big" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M10.5 18.5h3"/></svg>
+        <h3>Teléfono Android</h3>
+        <p>Android 7 o más nuevo. Pesa unos 5 MB.</p>
+        <p class="note">Al instalarla, Android pide permiso para instalar apps de esta fuente. Es normal: se descarga desde aquí y no desde Play Store.</p>
+        <a class="btn btn-main" href="SacaCuenta.apk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Descargar APK</a>
+      </div>
+      <div class="opt">
+        <svg class="big" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>
+        <h3>Computadora</h3>
+        <p>Se abre en el navegador. En Chrome o Edge la instalas como programa desde la barra de direcciones.</p>
+        <a class="btn btn-dark" href="app/">Abrir SacaCuenta</a>
+      </div>
+      <div class="opt">
+        <svg class="big" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="6" y="2.5" width="12" height="19" rx="3"/><path d="M11 5h2"/></svg>
+        <h3>iPhone</h3>
+        <p>Ábrela en Safari, toca Compartir y luego Agregar a pantalla de inicio.</p>
+        <a class="btn btn-dark" href="app/">Abrir en Safari</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="faq" id="preguntas">
+  <div class="wrap">
+    <h2>Preguntas</h2>
+    <div>
+      <details><summary>¿Necesito internet?</summary><p>Solo para crear tu cuenta, entrar y respaldar. Vender, cobrar y ver tu resumen funciona sin conexión; el respaldo se hace solo cuando vuelve la señal.</p></details>
+      <details><summary>¿Qué pasa cuando terminan los 7 días?</summary><p>No se borra nada. Puedes seguir viendo tu resumen, y para volver a vender activas tu cuenta con el pago único.</p></details>
+      <details><summary>¿Tengo que cargar todo el inventario para empezar?</summary><p>No. Puedes vender desde el primer minuto y anotar la existencia solo de los productos que te interese controlar.</p></details>
+      <details><summary>¿Puedo usarla en dos teléfonos?</summary><p>Puedes entrar con tu cuenta en otro teléfono y recuperar tu respaldo. Los dos no se actualizan al mismo tiempo, así que lo mejor es vender desde uno solo.</p></details>
+      <details><summary>¿Quién puede ver mis ventas?</summary><p>Solo tú. Tus datos están en tu teléfono y el respaldo se guarda en tu cuenta, que solo se abre con tu correo o tu Google.</p></details>
+      <details><summary>¿Por qué no está en Play Store?</summary><p>Para poder cobrarla por Pago Móvil y en bolívares, que Play Store no permite. Por eso se descarga desde esta página.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="end">
+  <div class="wrap">
+    <h2>Empieza hoy. <span class="hot">Gratis 7 días.</span></h2>
+    <div class="cta">
+      <a class="btn btn-main" href="SacaCuenta.apk">Descargar para Android</a>
+      <a class="btn btn-dark" href="app/">Usar en la computadora</a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <a class="logo" href="#"><img src="icon-192.png" alt="" width="32" height="32"><b>Saca<span>Cuenta</span></b></a>
+    <p>¿Dudas antes de descargarla? <a href="https://wa.me/584244186455">Escríbenos por WhatsApp</a></p>
+    <p>© 2026 SacaCuenta · Control interno del negocio, sin valor fiscal · <a href="privacidad.html">Privacidad</a></p>
+  </div>
+</footer>
+</body>
+</html>
